@@ -1,5 +1,5 @@
 /// # Haskell List Comprehension Macro
-/// Macro for Haskell-like list comprehensions in Rust
+/// A macro for Haskell-like list comprehensions in Rust
 ///
 /// # Examples:
 ///  ```rust
