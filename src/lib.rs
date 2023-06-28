@@ -20,6 +20,7 @@
 ///  ];
 ///  assert_eq!(arr2, [(0, 0), (0, 1), (1, 0), (1, 1)]);
 ///  ```
+/// More details can be found in README.md
 ///
 #[macro_export]
 macro_rules! comp {
@@ -123,7 +124,7 @@ macro_rules! parse {
     (
         $res:ident;
         $out:expr;
-        let $var:ident $($ty:ty)? = $expr:expr
+        let $var:ident $(: $ty:ty)? = $expr:expr
         $(, $( $unparsed:tt )* )?
     ) => {
         let $var $(: $ty)? = $expr;
@@ -136,7 +137,7 @@ macro_rules! parse {
     (
         $res:ident;
         $out:expr;
-        let mut $var:ident $($ty:ty)? = $expr:expr
+        let mut $var:ident $(: $ty:ty)? = $expr:expr
         $(, $( $unparsed:tt )* )?
     ) => {
         let mut $var $(: $ty)? = $expr;
@@ -149,12 +150,10 @@ macro_rules! parse {
     (
         $res:ident;
         $out:expr;
-        let { $( $var:ident = $expr:expr );* $(;)? }
+        let { $( $let_stmts:tt )* }
         $(, $( $unparsed:tt )* )?
     ) => {
-        $(
-        let $var = $expr;
-        )*
+        $crate::let_parse_entrance!($( $let_stmts )*);
 
         $crate::parse!(
             $res; $out; $($( $unparsed )*)?
@@ -164,12 +163,10 @@ macro_rules! parse {
     (
         $res:ident;
         $out:expr;
-        let mut { $( $var:ident = $expr:expr );* $(;)? }
+        let mut { $( $let_stmts:tt )* }
         $(, $( $unparsed:tt )* )?
     ) => {
-        $(
-        let mut $var = $expr;
-        )*
+        $crate::let_parse_entrance!(all_mut ; $( $let_stmts )*);
 
         $crate::parse!(
             $res; $out; $($( $unparsed )*)?
@@ -183,4 +180,59 @@ macro_rules! parse {
     ) => {
         $res.push($out);
     };
+}
+
+#[macro_export]
+macro_rules! let_parse_entrance {
+    (all_mut ; $( $let_stmts:tt )*) => {
+        $crate::let_parse_all_mut!($($let_stmts )*);
+    };
+
+    ($( $let_stmts:tt )*) => {
+        $crate::let_parse!($($let_stmts )*);
+    };
+}
+
+#[macro_export]
+macro_rules! let_parse {
+    (
+        mut $var:ident $(: $ty:ty)? = $expr:expr
+        $(; $( $let_stmts:tt )+ )?
+    ) => {
+        let mut $var $(: $ty)? = $expr;
+        $crate::let_parse!($( $( $let_stmts )+ )?);
+    };
+
+    (
+        $var:ident $(: $ty:ty)? = $expr:expr
+        $(; $( $let_stmts:tt )+ )?
+    ) => {
+        let $var $(: $ty)? = $expr;
+        $crate::let_parse!($( $( $let_stmts )+ )?);
+    };
+
+    // 结束条件
+    () => {};
+}
+
+#[macro_export]
+macro_rules! let_parse_all_mut {
+    (
+        mut $var:ident $(: $ty:ty)? = $expr:expr
+        $(; $( $let_stmts:tt )+ )?
+    ) => {
+        let mut $var $(: $ty)? = $expr;
+        $crate::let_parse_all_mut!($( $( $let_stmts )+ )?);
+    };
+
+    (
+        $var:ident $(: $ty:ty)? = $expr:expr
+        $(; $( $let_stmts:tt )+ )?
+    ) => {
+        let mut $var $(: $ty)? = $expr;
+        $crate::let_parse_all_mut!($( $( $let_stmts )+ )?);
+    };
+
+    // 结束条件
+    () => {};
 }
