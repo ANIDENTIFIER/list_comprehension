@@ -9,8 +9,8 @@ ListComprehensionExp:
   | [ Exp => Qual1 , . . . , Qualn ] (list comprehension, n ≥ 1 )
 
 Qual:
-    Pat <- Exp            (generator)
-  | Pat in Exp            (generator)
+    Ident <- Exp          (generator)
+  | Ident in Exp          (generator)
   | let (mut)? Decl       (local declaration)
   | let (mut)? Decls      (local declaration)
   | Exp(bool)             (boolean guard)
