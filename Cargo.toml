@@ -2,8 +2,11 @@
 name = "list_comprehension"
 version = "0.1.0"
 edition = "2021"
-license = "MIT OR Apache-2.0"
+
 description = "Macro for Haskell-like list comprehensions in Rust."
+readme = "README.md"
+license-file = "LICENSE"
+repository = "https://github.com/ANIDENTIFIER/list_comprehension"
 
 
 [dependencies]

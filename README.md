@@ -82,7 +82,7 @@ fn main() {
         , let mut b3: i8 = 1
     ];
     
-    // expand it: 
+    // expand the macro: 
     let arr = {
         let mut res = Vec::new();
         let a1: i8 = 1;
