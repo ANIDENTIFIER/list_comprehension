@@ -10,7 +10,7 @@ ListComprehensionExp:
 
 Qual:
     Ident <- Exp          (generator)
-  | Ident in Exp          (generator)
+  | Pattern in Exp        (generator)
   | let (mut)? Decl       (local declaration)
   | let (mut)? Decls      (local declaration)
   | Exp(bool)             (boolean guard)

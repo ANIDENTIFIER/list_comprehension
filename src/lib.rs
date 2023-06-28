@@ -57,7 +57,7 @@ macro_rules! parse {
     (
         $res:ident;
         $out:expr;
-        $var:ident in $iter:ident
+        $var:pat in $iter:ident
         $(, $( $unparsed:tt )* )?
     ) => {
         for $var in $iter {
@@ -70,7 +70,7 @@ macro_rules! parse {
     (
         $res:ident;
         $out:expr;
-        $var:ident in $iter:expr
+        $var:pat in $iter:expr
         $(, $( $unparsed:tt )* )?
     ) => {
         for $var in $iter {
