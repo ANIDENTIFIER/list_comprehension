@@ -16,10 +16,10 @@ qual:
   | exp(bool)      (boolean guard)
  
 decls:   // In the future, decl will be allowed to be used in decls
-    { non-type-decl1 ; . . . ; non-type-decln }     (n ≥ 0)
+    { partial-decl1 ; . . . ; partial-decln }     (n ≥ 0)
 
-non-type-decl:  
-    let (mut)? ident = exp
+partial-decl:  
+    (mut)? ident = exp
     
 decl:
     let (mut)? ident( : Type )? = exp
