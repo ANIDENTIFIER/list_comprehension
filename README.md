@@ -1,12 +1,12 @@
 # Haskell List Comprehension Macro
-Macro for Haskell-like list comprehensions in Rust
+A macro for Haskell-like list comprehensions in Rust
 
 # Grammars:
 ```
 ListComprehensionExp:
     [ Exp , Qual1 , . . . , Qualn ]  (list comprehension, n ≥ 1 )
-    [ Exp ; Qual1 , . . . , Qualn ]  (list comprehension, n ≥ 1 )
-    [ Exp => Qual1 , . . . , Qualn ] (list comprehension, n ≥ 1 )
+  | [ Exp ; Qual1 , . . . , Qualn ]  (list comprehension, n ≥ 1 )
+  | [ Exp => Qual1 , . . . , Qualn ] (list comprehension, n ≥ 1 )
 
 Qual:
     Pat <- Exp            (generator)
