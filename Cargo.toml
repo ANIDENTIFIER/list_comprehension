@@ -5,7 +5,6 @@ edition = "2021"
 
 description = "Macro for Haskell-like list comprehensions in Rust."
 readme = "README.md"
-license = "MIT"
 license-file = "LICENSE"
 repository = "https://github.com/ANIDENTIFIER/list_comprehension"
 
