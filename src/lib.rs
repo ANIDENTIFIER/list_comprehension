@@ -57,32 +57,6 @@ macro_rules! parse {
     (
         $res:ident;
         $out:expr;
-        $var:pat in $iter:ident
-        $(, $( $unparsed:tt )* )?
-    ) => {
-        for $var in $iter {
-            $crate::parse!(
-                $res; $out; $($( $unparsed )*)?
-            );
-        }
-    };
-
-    (
-        $res:ident;
-        $out:expr;
-        $var:pat in $iter:expr
-        $(, $( $unparsed:tt )* )?
-    ) => {
-        for $var in $iter {
-            $crate::parse!(
-                $res; $out; $($( $unparsed )*)?
-            );
-        }
-    };
-
-    (
-        $res:ident;
-        $out:expr;
         $var:ident <- $iter:ident
         $(, $( $unparsed:tt )* )?
     ) => {
@@ -104,21 +78,6 @@ macro_rules! parse {
                 $res; $out; $($( $unparsed )*)?
             );
         }
-    };
-
-    (
-        $res:ident;
-        $out:expr;
-        $pred:expr
-        $(, $( $unparsed:tt )* )?
-    ) => {
-        if !($pred) {
-            continue;
-        }
-
-        $crate::parse!(
-            $res; $out; $($( $unparsed )*)?
-        );
     };
 
     (
@@ -171,6 +130,47 @@ macro_rules! parse {
         $crate::parse!(
             $res; $out; $($( $unparsed )*)?
         );
+    };
+
+    (
+        $res:ident;
+        $out:expr;
+        $pred:expr
+        $(, $( $unparsed:tt )* )?
+    ) => {
+        if !($pred) {
+            continue;
+        }
+
+        $crate::parse!(
+            $res; $out; $($( $unparsed )*)?
+        );
+    };
+
+    (
+        $res:ident;
+        $out:expr;
+        $var:pat in $iter:ident
+        $(, $( $unparsed:tt )* )?
+    ) => {
+        for $var in $iter {
+            $crate::parse!(
+                $res; $out; $($( $unparsed )*)?
+            );
+        }
+    };
+
+    (
+        $res:ident;
+        $out:expr;
+        $var:pat in $iter:expr
+        $(, $( $unparsed:tt )* )?
+    ) => {
+        for $var in $iter {
+            $crate::parse!(
+                $res; $out; $($( $unparsed )*)?
+            );
+        }
     };
 
     // 结束条件
