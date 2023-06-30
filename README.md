@@ -76,8 +76,8 @@ fn main() {
     // example 3
     let arr = comp![
         ()
-        , let { a1: i8 = 1; mut b1 = 2; c1 = 3; mut d1: i8 = 4 }
-        , let mut { a2: i8 = 1; mut b2 = 2; c2 = 3; mut d2: i8 = 4 }
+        , let { a1 = 1; mut b1 = 2; c1: i8 = 3; mut d1: i8 = 4 }
+        , let mut { a2 = 1; mut b2 = 2; c2: i8 = 3; mut d2: i8 = 4 }
         , let a3 = 1
         , let mut b3: i8 = 1
     ];
@@ -85,16 +85,14 @@ fn main() {
     // expand the macro: 
     let arr = {
         let mut res = Vec::new();
-        let a1: i8 = 1;
+        let a1 = 1;
         let mut b1 = 2;
-        let c1 = 3;
+        let c1: i8 = 3;
         let mut d1: i8 = 4;
-        
-        let mut a2: i8 = 1;
+        let mut a2 = 1;
         let mut b2 = 2;
-        let mut c2 = 3;
+        let mut c2: i8 = 3;
         let mut d2: i8 = 4;
-        
         let a3 = 1;
         let mut b3: i8 = 1;
         res.push(());

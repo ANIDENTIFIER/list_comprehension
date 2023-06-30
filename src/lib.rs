@@ -2,24 +2,33 @@
 /// A macro for Haskell-like list comprehensions in Rust
 ///
 /// # Examples:
-///  ```rust
-///  use list_comprehension::comp;
+/// ```rust
+/// use list_comprehension::comp;
 ///
-///  // example 1
-///  let arr1: Vec<i32> = comp![n => n in [0, 1, 2, 3], n != 3];
-///  assert_eq!(arr1, [0, 1, 2]);
+/// // example 1
+/// let arr1: Vec<i32> = comp![n => n in [0, 1, 2, 3], n != 3];
+/// assert_eq!(arr1, [0, 1, 2]);
 ///
-///  // example 2
-///  let a = [0, 1, 2];
-///  let arr2: Vec<(i32, i32)> = comp![
-///      (n, m)
-///      , n in a
-///      , m in [0, 1, 2]
-///      , n != 2
-///      , m != 2
-///  ];
-///  assert_eq!(arr2, [(0, 0), (0, 1), (1, 0), (1, 1)]);
-///  ```
+/// // example 2
+/// let a = [0, 1, 2];
+/// let arr2: Vec<(i32, i32)> = comp![
+///     (n, m)
+///     , n in a
+///     , m in [0, 1, 2]
+///     , n != 2
+///     , m != 2
+/// ];
+/// assert_eq!(arr2, [(0, 0), (0, 1), (1, 0), (1, 1)]);
+///
+/// // example 3
+/// let arr = comp![
+///     ()
+///     , let { a1 = 1; mut b1 = 2; c1: i8 = 3; mut d1: i8 = 4 }
+///     , let mut { a2 = 1; mut b2 = 2; c2: i8 = 3; mut d2: i8 = 4 }
+///     , let a3 = 1
+///     , let mut b3: i8 = 1
+/// ];
+/// ```
 /// More details can be found in README.md
 ///
 #[macro_export]
