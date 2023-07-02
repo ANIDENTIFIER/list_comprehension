@@ -4,14 +4,14 @@ A macro for Haskell-like list comprehensions in Rust
 # Grammars:
 ```
 ListComprehensionExp:
-    [ Exp , Qual1 , . . . , Qualn ]  (list comprehension, n ≥ 1 )
-  | [ Exp ; Qual1 , . . . , Qualn ]  (list comprehension, n ≥ 1 )
-  | [ Exp => Qual1 , . . . , Qualn ] (list comprehension, n ≥ 1 )
+    comp![ Exp , Qual1 , . . . , Qualn ]  (list comprehension, n ≥ 1 )
+  | comp![ Exp ; Qual1 , . . . , Qualn ]  (list comprehension, n ≥ 1 )
+  | comp![ Exp => Qual1 , . . . , Qualn ] (list comprehension, n ≥ 1 )
 
 Qual:
     Ident <- Exp          (generator)
   | Pattern in Exp        (generator)
-  | let (mut)? Decl       (local declaration)
+  | let Decl              (local declaration)
   | let (mut)? Decls      (local declaration)
   | Exp(bool)             (boolean guard)
  

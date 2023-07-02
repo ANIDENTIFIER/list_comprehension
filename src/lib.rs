@@ -42,7 +42,7 @@ macro_rules! comp {
         }
     };
 
-    ($out:expr ; $( $unparsed:tt )+) => {
+    ($out:expr , $( $unparsed:tt )+) => {
         {
             let mut res = Vec::new();
             $crate::parse!(res; $out; $( $unparsed )+);
@@ -50,7 +50,8 @@ macro_rules! comp {
             res
         }
     };
-    ($out:expr , $( $unparsed:tt )+) => {
+
+    ($out:expr ; $( $unparsed:tt )+) => {
         {
             let mut res = Vec::new();
             $crate::parse!(res; $out; $( $unparsed )+);
@@ -134,7 +135,7 @@ macro_rules! parse {
         let mut { $( $let_stmts:tt )* }
         $(, $( $unparsed:tt )* )?
     ) => {
-        $crate::let_parse_entrance!(all_mut ; $( $let_stmts )*);
+        $crate::let_parse_entrance!(all_mut @@ $( $let_stmts )*);
 
         $crate::parse!(
             $res; $out; $($( $unparsed )*)?
@@ -193,7 +194,7 @@ macro_rules! parse {
 
 #[macro_export]
 macro_rules! let_parse_entrance {
-    (all_mut ; $( $let_stmts:tt )*) => {
+    (all_mut @@ $( $let_stmts:tt )*) => {
         $crate::let_parse_all_mut!($($let_stmts )*);
     };
 
