@@ -12,7 +12,7 @@ Qual:
     Ident <- Exp          (generator)
   | Pattern in Exp        (generator)
   | let Decl              (local declaration)
-  | let (mut)? Decls      (local declaration)
+  | let (mut)? Decls      (local declaration[1])
   | Exp(bool)             (boolean guard)
  
 Decls:
@@ -20,6 +20,11 @@ Decls:
     
 Decl:
     (mut)? Ident ( : Type )? = Exp
+  | Pat = Exp ( , else { ... } )?
+  
+  
+  
+[1] if `mut` is used, then all declarations will be added with `mut` unless pattern matching is used
 ```
 
 # Examples:
@@ -80,23 +85,40 @@ fn main() {
         , let mut { a2 = 1; mut b2 = 2; c2: i8 = 3; mut d2: i8 = 4 }
         , let a3 = 1
         , let mut b3: i8 = 1
+        , let Some(num) = Some(114) , else { panic!("Actually this panic shouldn't be called") }
     ];
     
     // expand the macro: 
     let arr = {
         let mut res = Vec::new();
+        
         let a1 = 1;
         let mut b1 = 2;
         let c1: i8 = 3;
         let mut d1: i8 = 4;
+        
         let mut a2 = 1;
         let mut b2 = 2;
         let mut c2: i8 = 3;
         let mut d2: i8 = 4;
+        
         let a3 = 1;
         let mut b3: i8 = 1;
+        
+        let Some(num) = Some(114) else {
+            panic!("Actually this panic shouldn't be called")
+        };
+        
         res.push(());
         res
     };
+  
+    // You can see more examples in tests/test_comp.rs
 }
 ```
+
+# Update
+* v0.1.4: 
+  * Allow `pattern matching` and a bit different `let else` in `local declaration`.
+  * Made some optimizations.
+  * Corrected a little bit of mistakes in README.

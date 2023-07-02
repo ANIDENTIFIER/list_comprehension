@@ -27,6 +27,7 @@
 ///     , let mut { a2 = 1; mut b2 = 2; c2: i8 = 3; mut d2: i8 = 4 }
 ///     , let a3 = 1
 ///     , let mut b3: i8 = 1
+///     , let Some(num) = Some(114) , else { panic!("Actually this panic shouldn't be called") }
 /// ];
 /// ```
 /// More details can be found in README.md
@@ -64,6 +65,32 @@ macro_rules! comp {
 #[macro_export]
 macro_rules! parse {
     // 递归展开
+    (
+        $res:ident;
+        $out:expr;
+        $var:ident in $iter:ident
+        $(, $( $unparsed:tt )* )?
+    ) => {
+        for $var in $iter {
+            $crate::parse!(
+                $res; $out; $($( $unparsed )*)?
+            );
+        }
+    };
+
+    (
+        $res:ident;
+        $out:expr;
+        $var:ident in $iter:expr
+        $(, $( $unparsed:tt )* )?
+    ) => {
+        for $var in $iter {
+            $crate::parse!(
+                $res; $out; $($( $unparsed )*)?
+            );
+        }
+    };
+
     (
         $res:ident;
         $out:expr;
@@ -136,6 +163,32 @@ macro_rules! parse {
         $(, $( $unparsed:tt )* )?
     ) => {
         $crate::let_parse_entrance!(all_mut @@ $( $let_stmts )*);
+
+        $crate::parse!(
+            $res; $out; $($( $unparsed )*)?
+        );
+    };
+
+    (
+        $res:ident;
+        $out:expr;
+        let $var:pat = $expr:expr , else { $( $else_code:tt )* }
+        $(, $( $unparsed:tt )* )?
+    ) => {
+        let $var = $expr else { $( $else_code )* };
+
+        $crate::parse!(
+            $res; $out; $($( $unparsed )*)?
+        );
+    };
+
+    (
+        $res:ident;
+        $out:expr;
+        let $var:pat = $expr:expr
+        $(, $( $unparsed:tt )* )?
+    ) => {
+        let $var = $expr;
 
         $crate::parse!(
             $res; $out; $($( $unparsed )*)?
@@ -221,6 +274,22 @@ macro_rules! let_parse {
         $crate::let_parse!($( $( $let_stmts )+ )?);
     };
 
+    (
+        $var:pat = $expr:expr , else { $( $else_code:tt )* }
+        $(; $( $let_stmts:tt )+ )?
+    ) => {
+        let $var = $expr else { $( $else_code )* };
+        $crate::let_parse!($( $( $let_stmts )+ )?);
+    };
+
+    (
+        $var:pat = $expr:expr
+        $(; $( $let_stmts:tt )+ )?
+    ) => {
+        let $var = $expr;
+        $crate::let_parse!($( $( $let_stmts )+ )?);
+    };
+
     // 结束条件
     () => {};
 }
@@ -240,6 +309,22 @@ macro_rules! let_parse_all_mut {
         $(; $( $let_stmts:tt )+ )?
     ) => {
         let mut $var $(: $ty)? = $expr;
+        $crate::let_parse_all_mut!($( $( $let_stmts )+ )?);
+    };
+
+    (
+        $var:pat = $expr:expr , else { $( $else_code:tt )* }
+        $(; $( $let_stmts:tt )+ )?
+    ) => {
+        let $var = $expr else { $( $else_code )* } ;
+        $crate::let_parse_all_mut!($( $( $let_stmts )+ )?);
+    };
+
+    (
+        $var:pat = $expr:expr
+        $(; $( $let_stmts:tt )+ )?
+    ) => {
+        let $var = $expr;
         $crate::let_parse_all_mut!($( $( $let_stmts )+ )?);
     };
 
