@@ -68,33 +68,7 @@ macro_rules! parse {
     (
         $res:ident;
         $out:expr;
-        $var:ident in $iter:ident
-        $(, $( $unparsed:tt )* )?
-    ) => {
-        for $var in $iter {
-            $crate::parse!(
-                $res; $out; $($( $unparsed )*)?
-            );
-        }
-    };
-
-    (
-        $res:ident;
-        $out:expr;
         $var:ident in $iter:expr
-        $(, $( $unparsed:tt )* )?
-    ) => {
-        for $var in $iter {
-            $crate::parse!(
-                $res; $out; $($( $unparsed )*)?
-            );
-        }
-    };
-
-    (
-        $res:ident;
-        $out:expr;
-        $var:ident <- $iter:ident
         $(, $( $unparsed:tt )* )?
     ) => {
         for $var in $iter {
