@@ -7,6 +7,7 @@ description = "A macro for Haskell-like list comprehensions in Rust."
 readme = "README.md"
 license = "MIT"
 repository = "https://github.com/ANIDENTIFIER/list_comprehension"
+keywords = ["macro", "comprehensions", "haskell", "list"]
 
 
 [dependencies]
