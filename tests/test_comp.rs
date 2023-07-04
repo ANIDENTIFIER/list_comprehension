@@ -48,9 +48,15 @@ fn test_comp() {
     ];
     assert_eq!(decl_with_mut_pattern_matching, ["Jack"]);
 
-    let decl_with_pattern_matching_and_let_else = comp![
+    let decl_with_pattern_matching_and_different_let_else = comp![
         num
         , let Some(num) = Some(114) , else { panic!("Actually this panic shouldn't be called") }
+    ];
+    assert_eq!(decl_with_pattern_matching_and_different_let_else, [114]);
+
+    let decl_with_pattern_matching_and_let_else = comp![
+        num
+        , let Some(num) = Some(114) else { panic!("Actually this panic shouldn't be called") }
     ];
     assert_eq!(decl_with_pattern_matching_and_let_else, [114]);
 
@@ -78,14 +84,14 @@ fn test_comp() {
     ];
     assert_eq!(decls_with_mut_pattern_matching, [("Jack", 514)]);
 
-    let decls_with_pattern_matching_and_let_else = comp![
+    let decls_with_pattern_matching_and_let_else_p = comp![
         (num1, num2)
         , let {
             Some(num1) = Some(114) , else { panic!("Actually this panic shouldn't be called") };
             Some(num2) = Some(514) , else { panic!("Actually this panic shouldn't be called") }
         }
     ];
-    assert_eq!(decls_with_pattern_matching_and_let_else, [(114, 514)]);
+    assert_eq!(decls_with_pattern_matching_and_let_else_p, [(114, 514)]);
 
     let _empty_decls = comp![
         (),
@@ -101,8 +107,8 @@ fn test_comp() {
         , let t = TestS { name: "LiHua", age: 114 }
         , TestS { name , ..} in [t.clone()]
         , TestS { age , ..}  in [t.clone()]
-        // , TestS { mut name2 , ..} in [t.clone()]
-        // , TestS { mut age2 , ..}  in [t.clone()]
+        , for TestS { name: mut name2 , ..} in [t.clone()]
+        , for TestS { age: mut age2 , ..}  in [t.clone()]
 
         , n in shared_arr
         , m in [0, 1, 2]
@@ -131,6 +137,7 @@ fn test_comp() {
             TestS { mut age, .. } = TestS { name: "LiHua", age: 114 }
         }
         , let Some(num) = Some(114) , else { panic!("Actually this panic shouldn't be called") }
+        , let Some(num) = Some(114) else { panic!("Actually this panic shouldn't be called") }
         , let {
             Some(num1) = Some(114) , else { panic!("Actually this panic shouldn't be called") };
             Some(num2) = Some(514) , else { panic!("Actually this panic shouldn't be called") }

@@ -27,7 +27,7 @@
 ///     , let mut { a2 = 1; mut b2 = 2; c2: i8 = 3; mut d2: i8 = 4 }
 ///     , let a3 = 1
 ///     , let mut b3: i8 = 1
-///     , let Some(num) = Some(114) , else { panic!("Actually this panic shouldn't be called") }
+///     , let Some(num) = Some(114) else { panic!("Actually this panic shouldn't be called") }
 /// ];
 /// ```
 /// More details can be found in README.md
@@ -172,6 +172,19 @@ macro_rules! parse {
     (
         $res:ident;
         $out:expr;
+        for $var:pat in $iter:expr
+        $(, $( $unparsed:tt )* )?
+    ) => {
+        for $var in $iter {
+            $crate::parse!(
+                $res; $out; $($( $unparsed )*)?
+            );
+        }
+    };
+
+    (
+        $res:ident;
+        $out:expr;
         $pred:expr
         $(, $( $unparsed:tt )* )?
     ) => {
@@ -187,14 +200,14 @@ macro_rules! parse {
     (
         $res:ident;
         $out:expr;
-        $var:pat in $iter:ident
+        $let_stmt:stmt
         $(, $( $unparsed:tt )* )?
     ) => {
-        for $var in $iter {
-            $crate::parse!(
-                $res; $out; $($( $unparsed )*)?
-            );
-        }
+        $let_stmt;
+
+        $crate::parse!(
+            $res; $out; $($( $unparsed )*)?
+        );
     };
 
     (
@@ -209,6 +222,7 @@ macro_rules! parse {
             );
         }
     };
+
 
     // 结束条件
     (
@@ -301,6 +315,7 @@ macro_rules! let_parse_all_mut {
         let $var = $expr;
         $crate::let_parse_all_mut!($( $( $let_stmts )+ )?);
     };
+
 
     // 结束条件
     () => {};
