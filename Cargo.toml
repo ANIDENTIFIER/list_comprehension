@@ -1,6 +1,6 @@
 [package]
 name = "list_comprehension"
-version = "0.1.5"
+version = "0.2.0"
 edition = "2021"
 
 description = "A macro for Haskell-like list comprehensions in Rust."
@@ -10,4 +10,11 @@ repository = "https://github.com/ANIDENTIFIER/list_comprehension"
 keywords = ["macro", "comprehensions", "haskell", "list"]
 
 
-[dependencies]
+[dependencies.genawaiter]
+version = "^0.99.1"
+default-features = false
+optional = true
+
+[features]
+default = ["lazy_comp"]
+lazy_comp = ["genawaiter"]

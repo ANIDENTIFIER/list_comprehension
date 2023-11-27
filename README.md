@@ -1,7 +1,7 @@
-# Haskell List Comprehension Macro
+# List Comprehension
 A macro for Haskell-like list comprehensions in Rust
 
-# Grammars:
+# Syntax:
 ```
 ListComprehensionExp:
     comp![ Exp , Qual1 , . . . , Qualn ]  (list comprehension, n ≥ 1 )
@@ -120,7 +120,7 @@ fn main() {
 # Update
 * v0.1.5:
   * Supports original `let else` syntax, but you can't use it in the `let { ... }` syntax.
-  * Now you can force the `Pattern in Exp` syntax by prefixing the `Pattern` with `for` (See Grammar for details).
+  * Now you can force the `Pattern in Exp` syntax by prefixing the `Pattern` with `for` (See Syntax for details).
 * v0.1.4: 
   * Allow `pattern matching` and a bit different `let else` in `local declaration`.
   * Made some optimizations.

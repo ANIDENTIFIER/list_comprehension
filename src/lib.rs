@@ -1,4 +1,10 @@
-/// # Haskell List Comprehension Macro
+#[cfg(feature = "lazy_comp")]
+pub mod lazy;
+
+#[cfg(feature = "lazy_comp")]
+pub use lazy::{IntoIter, LazyComp};
+
+/// # List Comprehension
 /// A macro for Haskell-like list comprehensions in Rust
 ///
 /// # Examples:
@@ -31,7 +37,6 @@
 /// ];
 /// ```
 /// More details can be found in README.md
-///
 #[macro_export]
 macro_rules! comp {
     ($out:expr => $( $unparsed:tt )+) => {
