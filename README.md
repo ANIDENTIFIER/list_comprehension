@@ -7,6 +7,9 @@ ListComprehensionExp:
     comp![ Exp , Qual1 , . . . , Qualn ]  (list comprehension, n ≥ 1 )
   | comp![ Exp ; Qual1 , . . . , Qualn ]  (list comprehension, n ≥ 1 )
   | comp![ Exp => Qual1 , . . . , Qualn ] (list comprehension, n ≥ 1 )
+  | lazy_comp![ Exp , Qual1 , . . . , Qualn ]  (lazy list comprehension, n ≥ 1 )
+  | lazy_comp![ Exp ; Qual1 , . . . , Qualn ]  (lazy list comprehension, n ≥ 1 )
+  | lazy_comp![ Exp => Qual1 , . . . , Qualn ] (lazy list comprehension, n ≥ 1 )
 
 Qual:
     Ident <- Exp            (generator)
@@ -32,11 +35,12 @@ DeclWithElse:
     you can now force the `Pattern in Exp` syntax by prefixing the `Pattern` with `for`
 ```
 
+
 # Examples:
 ```rust
 fn main() {
     // example 1
-    let arr1: Vec<i32> = comp![n => n in [0, 1, 2, 3], n != 3];
+    let arr1: Vec<i32> = comp![n; n in [0, 1, 2, 3], n != 3];
     assert_eq!(arr1, [0, 1, 2]);
     
     // expand the macro:
@@ -84,40 +88,30 @@ fn main() {
 // ----------------------------------------------------------------------------------------------------
     
     // example 3
-    let arr = comp![
-        ()
-        , let { a1 = 1; mut b1 = 2; c1: i8 = 3; mut d1: i8 = 4 }
-        , let mut { a2 = 1; mut b2 = 2; c2: i8 = 3; mut d2: i8 = 4 }
-        , let a3 = 1
-        , let mut b3: i8 = 1
-        , let Some(num) = Some(114) else { panic!("Actually this panic shouldn't be called") }
+    let arr3 = lazy_comp![
+        { println!("{i}"); i } 
+        , i in 0..3
     ];
     
-    // expand the macro: 
-    let arr = {
-        let mut res = Vec::new();
-        let a1 = 1;
-        let mut b1 = 2;
-        let c1: i8 = 3;
-        let mut d1: i8 = 4;
-        let mut a2 = 1;
-        let mut b2 = 2;
-        let mut c2: i8 = 3;
-        let mut d2: i8 = 4;
-        let a3 = 1;
-        let mut b3: i8 = 1;
-        let Some(num) = Some(114) else {
-            panic!("Actually this panic shouldn't be called")
-        };
-        res.push(());
-        res
-    };
+    for _ in arr3 {
+        println!("------")
+    }
+  
+    // console output:
+    // 0
+    // ------
+    // 1
+    // ------
+    // 2
+    // ------
   
     // You can see more examples in tests/test_comp.rs
 }
 ```
 
 # Update
+* v0.2.0:
+  * Added `lazy_comp` macro, which supports lazy evaluation. Its syntax is the same as `comp!`.
 * v0.1.5:
   * Supports original `let else` syntax, but you can't use it in the `let { ... }` syntax.
   * Now you can force the `Pattern in Exp` syntax by prefixing the `Pattern` with `for` (See Syntax for details).

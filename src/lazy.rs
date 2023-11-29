@@ -3,18 +3,20 @@ use genawaiter::sync::{Co, Gen};
 use std::future::Future;
 use std::marker::PhantomData;
 
+/// Don't bother with his complex declarations, just know
+/// that it implements `Clone` and `IntoIter`.
 pub struct LazyComp<Y, F, Fu>
 where
-    F: Clone + FnOnce(Co<Y>) -> Fu,
+    F: FnOnce(Co<Y>) -> Fu,
     Fu: Future<Output = ()>,
 {
     func: F,
-    _m: PhantomData<(Y, Fu)>,
+    _m: PhantomData<Co<Y>>,
 }
 
 impl<Y, F, Fu> LazyComp<Y, F, Fu>
 where
-    F: Clone + FnOnce(Co<Y>) -> Fu,
+    F: FnOnce(Co<Y>) -> Fu,
     Fu: Future<Output = ()>,
 {
     pub fn new(f: F) -> LazyComp<Y, F, Fu> {
@@ -27,7 +29,7 @@ where
 
 impl<Y, F, Fu> IntoIterator for LazyComp<Y, F, Fu>
 where
-    F: Clone + FnOnce(Co<Y>) -> Fu,
+    F: FnOnce(Co<Y>) -> Fu,
     Fu: Future<Output = ()>,
 {
     type Item = Y;
@@ -36,6 +38,7 @@ where
     fn into_iter(self) -> Self::IntoIter {
         IntoIter {
             generator: Gen::new(self.func),
+            completed: false,
         }
     }
 }
@@ -53,21 +56,53 @@ where
     }
 }
 
-pub struct IntoIter<Y, F: Future<Output = ()>> {
-    generator: Gen<Y, (), F>,
+/// It does not implement `Clone`. Please use ```lazy_comp![].clone().into_iter()```
+pub struct IntoIter<Y, Fu: Future<Output = ()>> {
+    generator: Gen<Y, (), Fu>,
+    completed: bool,
 }
 
-impl<Y, F: Future<Output = ()>> Iterator for IntoIter<Y, F> {
+impl<Y, Fu: Future<Output = ()>> Iterator for IntoIter<Y, Fu> {
     type Item = Y;
 
     fn next(&mut self) -> Option<Self::Item> {
+        if self.completed {
+            return None;
+        }
+
         match self.generator.resume() {
             genawaiter::GeneratorState::Yielded(x) => Some(x),
-            genawaiter::GeneratorState::Complete(()) => None,
+            genawaiter::GeneratorState::Complete(()) => {
+                self.completed = true;
+                None
+            }
         }
     }
 }
 
+/// Syntax is the same as [`super::comp`], except that it's lazy.
+/// # Example
+/// ```rust
+/// use list_comprehension::{lazy_comp, LazyComp};
+///
+/// // example 3
+/// let arr3 = lazy_comp![
+///     { println!("{i}"); i }
+///     , i in 0..3
+/// ];
+///     
+/// for _ in arr3 {
+///     println!("------")
+/// }
+///
+/// // console output:
+/// // 0
+/// // ------
+/// // 1
+/// // ------
+/// // 2
+/// // ------
+/// ```
 #[macro_export]
 macro_rules! lazy_comp {
     ($out:expr => $( $unparsed:tt )+) => {
